@@ -11,7 +11,7 @@ require('dotenv').config()
 app.use(express.json());
 app.use(cors())
 app.use(express.urlencoded({extended: true}));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(morgan('dev')); // remove in production
 
 app.use('/api/v1', appRouter)

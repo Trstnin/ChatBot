@@ -1,5 +1,10 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const tokenGenerator = require("../utils/tokensmanager.util");
+const COOKIE_NAME = require("../utils/constants");
+
+
+
 
 const getAllUsers = async (req, res) => {
   try {
@@ -29,6 +34,26 @@ const registerUsers = async (req, res) => {
 
    })
 
+   //create user and send cookie
+   res.clearCookie(COOKIE_NAME, {
+    path:'/',
+    domain: 'localhost',
+    httpOnly: true,
+    signed: true
+   })
+  
+
+      const token = tokenGenerator(Existeduser.id.toString(), Existeduser.email);
+      const expires = new Date();
+      expires.setDate(expires.getDate() + 7)
+      res.cookie(COOKIE_NAME, token , {
+        path:'/',
+        domain: 'localhost',
+        httpOnly: true,
+        expires,
+        signed: true
+      })
+
     res.status(201).json({ message: "User registered succesfully", id:user._id });
   } catch (error) {
     console.log(error);
@@ -37,17 +62,45 @@ const registerUsers = async (req, res) => {
 };
 
 const loginUsers = async (req, res) => {
-     const{email , password} = req.body
-     const Existeduser =await userModel.findOne({email});
-     if(!Existeduser) return res.status(400).json({message: "something went wrong"});
+   try {
+      const{email , password} = req.body
+      const Existeduser =await userModel.findOne({email});
+      if(!Existeduser) return res.status(400).json({message: "something went wrong"});
+ 
+      bcrypt.compare(password , Existeduser.password, (err, result) => {
+       if(result){
+        
+        //creating and sending cookie
+         res.clearCookie(COOKIE_NAME, {
+          path:'/',
+          domain: 'localhost',
+          httpOnly: true,
+          signed: true
+         })
+        
 
-     bcrypt.compare(password , Existeduser.password, (err, result) => {
-      if(result){
-        return res.status(200).json({message: "Logged In Sucessfully"})
-      }else{
-        return res.status(400).json({message: "something went wrong"})
-      }
-     })
+            const token = tokenGenerator(Existeduser.id.toString(), Existeduser.email);
+            const expires = new Date();
+            expires.setDate(expires.getDate() + 7)
+            res.cookie(COOKIE_NAME, token , {
+              path:'/',
+              domain: 'localhost',
+              httpOnly: true,
+              expires,
+              signed: true
+            })
+
+
+         return res.status(200).json({message: "Logged In Sucessfully"})
+       }else{
+         return res.status(400).json({message: "something went wrong"})
+       }
+
+      })
+   } catch (error) {
+      console.log(error)
+       res.status(400).json({message: "Error", cause: error.message})
+   }
 }
 
 
