@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const  COOKIE_NAME = require('./constants')
 
 const tokenGenerator = (id, email, expireIn) => {
    const payload = {id , email}
@@ -6,4 +7,9 @@ const tokenGenerator = (id, email, expireIn) => {
    return token;
 }
 
-module.exports = tokenGenerator
+const verifyUser = (req,res) => {
+   const token = req.signedCookies[`${COOKIE_NAME}`]
+   console.log(token)
+}
+
+module.exports = {tokenGenerator, verifyUser}

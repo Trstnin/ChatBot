@@ -54,7 +54,7 @@ const registerUsers = async (req, res) => {
         signed: true
       })
 
-    res.status(201).json({ message: "User registered succesfully", id:user._id });
+    res.status(201).json({ message: "User registered succesfully",  email:user.email , name: user.name });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: "Error", cause: error.message });
@@ -64,8 +64,10 @@ const registerUsers = async (req, res) => {
 const loginUsers = async (req, res) => {
    try {
       const{email , password} = req.body
+      //console.log(email)
       const Existeduser =await userModel.findOne({email});
-      if(!Existeduser) return res.status(400).json({message: "something went wrong"});
+      //console.log(Existeduser)
+      if(!Existeduser) return res.status(400).json({message: "something went wrong "});
  
       bcrypt.compare(password , Existeduser.password, (err, result) => {
        if(result){
@@ -91,9 +93,9 @@ const loginUsers = async (req, res) => {
             })
 
 
-         return res.status(200).json({message: "Logged In Sucessfully"})
+         return res.status(200).json({message: "Logged In Sucessfully" ,  email:Existeduser.email , name: Existeduser.name})
        }else{
-         return res.status(400).json({message: "something went wrong"})
+         return res.status(200).json({message: "something went wrong "})
        }
 
       })

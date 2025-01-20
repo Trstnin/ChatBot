@@ -2,11 +2,33 @@ import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { RiLoginBoxLine } from "react-icons/ri";
 import CustomizedInput from "../components/shared/CustomizedInput";
+import { useAuth } from "../context/Auth_context";
+import {toast} from "react-hot-toast";
+
 
 function Login() {
+const auth = useAuth()
 
-  const handleSubmit =  (e) => {
+  
+  const handleSubmit = async (e) => {
     e.preventDefault()   
+    const formData = new FormData(e.currentTarget)
+    const email = formData.get('email')
+    const password = formData.get('password')
+    if (!email || !password) {
+      return toast.error('Please fill all fields');
+    }
+    try {
+      toast.loading('Signing In', {id: "login"})
+     await auth?.login(email , password)
+      
+       toast.success('Signed In Successfully', {id:'login'})
+    } catch (error) {
+      console.log('fail signing in')
+      toast.error('Fail Signing In', {id:'login'})
+      
+    }
+
   }
 
   return (

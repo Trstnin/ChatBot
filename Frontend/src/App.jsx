@@ -5,7 +5,7 @@ import Chat from "./pages/Chat";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Signup from "./pages/Signup";
-import { useAuth } from "./context/Auth_context.jsx";
+
 
 function App() {
 
