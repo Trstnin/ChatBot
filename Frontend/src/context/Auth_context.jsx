@@ -1,5 +1,5 @@
 import { createContext,  useState, useEffect, useContext } from "react";
-import { loginUser } from "../helpers/api-comunicator.js";
+import { checkAuthStatus, loginUser } from "../helpers/api-comunicator.js";
 
 const AuthContext = createContext(null)
 
@@ -9,7 +9,17 @@ export const AuthProvider = ({children}) =>{
 
     useEffect(() => {
       //fetch if user's cookies are valid then skip login
+      const checkStatus = async () => {
+        const data = await checkAuthStatus()
+        if(data){
+          setUser({email:data.email , name:data.name});
+          setIsLoggedIn(true)
+        }
+      }
+      checkStatus()
+
     }, [])
+    
 
     const login =async (email ,password) => {
       const data = await loginUser(email,password)

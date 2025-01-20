@@ -1,6 +1,6 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
-const tokenGenerator = require("../utils/tokensmanager.util");
+const {tokenGenerator} = require("../utils/tokensmanager.util");
 const COOKIE_NAME = require("../utils/constants");
 
 
@@ -105,6 +105,25 @@ const loginUsers = async (req, res) => {
    }
 }
 
+const verifyUsers = async (req, res) => {
+  try {
+     
+     const Existeduser =await userModel.findById(res.locals.jwtData.id);
+     //console.log(Existeduser)
+     if(!Existeduser) return res.status(400).send( "User not registered or token malfunctioned");
+     if(Existeduser._id.toString() !== res.locals.jwtData.id ){
+      return res.status(400).send( "Permissons didint matched");
+     }
+     
+      
+
+     }
+   catch (error) {
+     console.log(error)
+      res.status(400).json({message: "Error", cause: error.message})
+  }
+}
 
 
-module.exports = { getAllUsers, registerUsers, loginUsers }; //exporting a function
+
+module.exports = { getAllUsers, registerUsers, loginUsers ,verifyUsers}; //exporting a function

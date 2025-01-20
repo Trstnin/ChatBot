@@ -7,9 +7,24 @@ const tokenGenerator = (id, email, expireIn) => {
    return token;
 }
 
-const verifyUser = (req,res) => {
+const verifyToken = (req , res , next) => {
    const token = req.signedCookies[`${COOKIE_NAME}`]
-   console.log(token)
+  
+   if(!token || token.trim() === ""){
+      res.status(400).json({message:"Trouble getting a token"})
+   }
+
+   jwt.verify(token,process.env.JWT_SECRET, (err,result)=> {
+      if(err){
+         return res.status(400).json({message:"Token Expired"})
+      }else{
+         console.log('Token Verification Sucessfully ')
+         res.locals.jwtData = result
+         return next()
+      }
+     
+          
+   })
 }
 
-module.exports = {tokenGenerator, verifyUser}
+module.exports = {tokenGenerator, verifyToken}
