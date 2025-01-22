@@ -1,4 +1,4 @@
-const userModel = require("../models/user.model");
+const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const {tokenGenerator} = require("../utils/tokensmanager.util");
 const COOKIE_NAME = require("../utils/constants");
@@ -8,7 +8,7 @@ const COOKIE_NAME = require("../utils/constants");
 
 const getAllUsers = async (req, res) => {
   try {
-    const Users = await userModel.find();
+    const Users = await User.find();
     if (!Users) {
       return res.status(400).json({ message: "no user found" });
     }
@@ -23,11 +23,11 @@ const getAllUsers = async (req, res) => {
 const registerUsers = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const Existeduser = await userModel.findOne({ email });
+    const Existeduser = await User.findOne({ email });
     if (Existeduser)
       return res.status(400).json({ message: "user already exists" });
    const hashedPassword = await bcrypt.hash(password , 10);
-   const user = await userModel.create({
+   const user = await User.create({
     name, 
     password: hashedPassword,
     email
@@ -65,7 +65,7 @@ const loginUsers = async (req, res) => {
    try {
       const{email , password} = req.body
       //console.log(email)
-      const Existeduser =await userModel.findOne({email});
+      const Existeduser =await User.findOne({email});
       //console.log(Existeduser)
       if(!Existeduser) return res.status(400).json({message: "something went wrong "});
  
@@ -108,14 +108,14 @@ const loginUsers = async (req, res) => {
 const verifyUsers = async (req, res) => {
   try {
      
-     const Existeduser =await userModel.findById(res.locals.jwtData.id);
+     const Existeduser =await User.findById(res.locals.jwtData.id);
      //console.log(Existeduser)
      if(!Existeduser) return res.status(400).send( "User not registered or token malfunctioned");
      if(Existeduser._id.toString() !== res.locals.jwtData.id ){
       return res.status(400).send( "Permissons didint matched");
      }
      
-      
+    
 
      }
    catch (error) {

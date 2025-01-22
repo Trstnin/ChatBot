@@ -38,8 +38,11 @@ const signupValidator = [
     // .withMessage('password is required'),
 ];
 
+const chatValidator = [
+  body("message").notEmpty().withMessage("name is required"),
+
+];
 
 
 
-
-module.exports = {validate , signupValidator,logInValidator}
+module.exports = {validate , signupValidator,logInValidator,chatValidator}

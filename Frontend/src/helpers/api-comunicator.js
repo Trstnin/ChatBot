@@ -29,3 +29,34 @@ export const  checkAuthStatus = async () => {
   }
 }
 
+
+export const  sendMesssageRequest = async (message) => {
+    const res = await axios.post('/chat/new', {message});
+    
+  try {
+      if(res.status !== 200){
+          throw new Error('Unable to send chat')
+      }
+      const data = await res.data
+      return data; 
+  } catch (error) {
+     console.log('request data:',res.data)
+     console.log('Full error:', error.response)
+  }
+}
+
+
+export const  clearChats = async () => {
+    const res = await axios.get('/chat/clear');
+    
+  try {
+      if(res.status !== 200){
+          throw new Error('Unable to clear chat')
+      }
+      const data = await res.data
+      return data; 
+  } catch (error) {
+     console.log('request data:',res.data)
+     console.log('Full error:', error.response)
+  }
+}

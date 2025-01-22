@@ -1,26 +1,34 @@
-const mongoose = require('mongoose');
-
-const userSchema = new mongoose.Schema({
-   name : {
+const   mongoose= require ("mongoose");
+const { randomUUID } = require ("crypto");
+const chatSchema = new mongoose.Schema({
+  id: {
     type: String,
-    required: true
-   },
-
-   email: {
+    default: randomUUID(),
+  },
+  role: {
     type: String,
     required: true,
-    unique: true
-   },
-
-   password: {
+  },
+  content: {
     type: String,
-    required: true
-   },
+    required: true,
+  },
+});
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  chats: [chatSchema],
+});
 
-   chats: [{ 
-     type: mongoose.Schema.Types.ObjectId,
-     ref: 'chats'
-    }]
-})
-
-module.exports = mongoose.model('user' , userSchema)
+module.exports =  mongoose.model("User", userSchema);

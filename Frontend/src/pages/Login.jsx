@@ -1,12 +1,14 @@
-import React from "react";
+import{useEffect }from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { RiLoginBoxLine } from "react-icons/ri";
 import CustomizedInput from "../components/shared/CustomizedInput";
 import { useAuth } from "../context/Auth_context";
 import {toast} from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 
 function Login() {
+  const navigate = useNavigate();
 const auth = useAuth()
 
   
@@ -30,7 +32,11 @@ const auth = useAuth()
     }
 
   }
-
+  useEffect(() => {
+    if (auth?.user) {
+      return navigate("/chat");
+    }
+  }, [auth]);
   return (
      
 
